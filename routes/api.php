@@ -2,26 +2,29 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\CourseController;
+use App\Http\Controllers\Api\Authentication;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
-
-
-Route::post('/login', [App\Http\Controllers\Api\AuthController::class, 'login']);
-Route::post('/register', [App\Http\Controllers\Api\AuthController::class, 'register']);
-Route::post('/logout', [App\Http\Controllers\Api\AuthController::class, 'logout'])->middleware('auth:sanctum');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::middleware('auth:sanctum')->group(function () {
+    
+    Route::controller(CourseController::class)->group(function () {
+        Route::get('/courses/{id}', 'getOneCourse');
+        Route::get('/courses', 'getAllCourse');
+        Route::post('/courses/create', 'createCourse');
+        Route::put('/courses/update/{id}', 'updateCourse');
+        Route::delete('/courses/delete/{id}', 'deleteCourse');
+    });
+
+});
+
 
 
 
