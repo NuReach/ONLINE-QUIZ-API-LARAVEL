@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\CourseController;
 use App\Http\Controllers\Api\Authentication;
 use App\Http\Controllers\Api\QuestionController;
+use App\Http\Controllers\Api\ExamController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -32,7 +33,13 @@ Route::middleware(['auth:sanctum','admin'])->group(function () {
         Route::delete('/questions/delete/{id}', 'deleteQuestion');
     }); 
 
-    
+    Route::controller(ExamController::class)->group(function () {
+        Route::get('/exams/{id}', 'getOneExam');
+        Route::get('/exams', 'getAllExam');
+        Route::post('/exams/create', 'createExam');
+        Route::put('/exams/update/{id}', 'updateExam');
+        Route::delete('/exams/delete/{id}', 'deleteExam');
+    }); 
 
 });
 

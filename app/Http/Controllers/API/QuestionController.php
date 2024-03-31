@@ -35,7 +35,6 @@ class QuestionController extends Controller
             'question_prompt' => 'required',
             'question_type' => 'required',
             'question_level' => 'required',
-            'question_answer' => 'required',
             'question_choices' => 'required|array', // Ensure question_choices is an array
             'question_choices.*.text' => 'required', // Validate each choice text
         ]);
@@ -55,7 +54,6 @@ class QuestionController extends Controller
                 'question_image' => $request->input('question_image'),
                 'question_type' => $request->input('question_type'),
                 'question_level' => $request->input('question_level'),
-                'question_answer' => $request->input('question_answer'),
             ]);
     
             // Create choices for the question
