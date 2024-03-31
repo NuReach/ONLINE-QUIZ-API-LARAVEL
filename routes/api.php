@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\CourseController;
 use App\Http\Controllers\Api\Authentication;
 use App\Http\Controllers\Api\QuestionController;
 use App\Http\Controllers\Api\ExamController;
+use App\Http\Controllers\Api\SubmitExamController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -41,6 +42,12 @@ Route::middleware(['auth:sanctum','admin'])->group(function () {
         Route::delete('/exams/delete/{id}', 'deleteExam');
     }); 
 
+});
+
+
+
+Route::controller(SubmitExamController::class)->group(function () {
+    Route::post('/submitExam/create', 'createSubmitExam');
 });
 
 

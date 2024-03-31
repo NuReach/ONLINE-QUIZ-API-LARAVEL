@@ -105,8 +105,7 @@ class ExamController extends Controller
 
         // Update the exam attributes
         $exam->update([
-            '
-            ' => $request->input('exam_title'),
+            'exam_title' => $request->input('exam_title'),
             'course_id' => $request->input('course_id'),
             'exam_percentage' => $request->input('exam_percentage'),
             'exam_score' => $request->input('exam_score'),
@@ -132,30 +131,6 @@ class ExamController extends Controller
     }
 }
 
-public function deleteExam($id)
-    {
-        // Find the exam by ID
-        $exam = Exam::find($id);
-        
-        // If the exam doesn't exist, return a 404 response
-        if (!$exam) {
-            return response()->json(['error' => 'Exam not found'], 404);
-        }
-
-        // Attempt to delete the associated pivot records
-        try {
-            $exam->questions()->detach();
-
-            // Attempt to delete the exam
-            $exam->delete();
-
-            // Return a success response
-            return response()->json(['message' => 'Exam deleted successfully'], 200);
-        } catch (\Exception $e) {
-            // If an error occurs, return a 500 response
-            return response()->json(['error' => 'Failed to delete exam'], 500);
-        }
-    }
 
 
 }
