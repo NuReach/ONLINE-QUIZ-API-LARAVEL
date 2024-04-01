@@ -18,7 +18,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware(['auth:sanctum','admin','teacher'])->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::controller(CourseController::class)->group(function () {
         Route::get('/courses/{id}', 'getOneCourse');

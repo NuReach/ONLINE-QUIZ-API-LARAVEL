@@ -30,7 +30,7 @@ class AuthController extends Controller
             $user = Auth::user();
             $token = $user->createToken('auth_token')->plainTextToken;
 
-            return response()->json(['token' => $token]);
+            return response()->json(['token' => $token , 'role' => $user->role]);
         }
 
         // If authentication fails, return an error response
