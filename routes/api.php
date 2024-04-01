@@ -7,6 +7,8 @@ use App\Http\Controllers\Api\Authentication;
 use App\Http\Controllers\Api\QuestionController;
 use App\Http\Controllers\Api\ExamController;
 use App\Http\Controllers\Api\SubmitExamController;
+use App\Http\Controllers\Api\ResultController;
+use App\Http\Controllers\Api\AuthController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -49,6 +51,12 @@ Route::middleware(['auth:sanctum','admin'])->group(function () {
 Route::controller(SubmitExamController::class)->group(function () {
     Route::post('/submitExam/create', 'createSubmitExam');
 });
+
+Route::controller(ResultController::class)->group(function () {
+    Route::get('/getResult', 'getResult');
+    Route::get('/getResult/studentScore/{id}', 'getResultStudentScore');
+});
+
 
 
 
