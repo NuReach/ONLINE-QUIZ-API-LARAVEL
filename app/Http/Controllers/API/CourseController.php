@@ -21,7 +21,7 @@ class CourseController extends Controller
 
     public function getAllCourseBelongToUser(Request $request)
     {
-        $courses = $request->user()->courses()->paginate(4); 
+        $courses = $request->user()->courses()->paginate(9); 
         return response()->json($courses, 200);
     }
 
@@ -29,6 +29,19 @@ class CourseController extends Controller
     {
         $courses = Course::all();
         return response()->json($courses);
+    }
+
+    public function searchCourse ( Request $request , $search ) {
+        $courses = $request->user()->courses()
+                   ->where(
+                    function($query) use ($search) {
+                        $query->where('course_code','LIKE',"%$search%")
+                        ->orWhere('course_title','LIKE',"%$search%");
+                    }
+                   )->paginate(9)
+        ;
+
+        return response()->json($courses, 200);
     }
 
     public function createCourse(Request $request)
