@@ -19,6 +19,12 @@ class CourseController extends Controller
         }
     }
 
+    public function getAllCourseBelongToUser(Request $request)
+    {
+        $courses = $request->user()->courses()->paginate(4); 
+        return response()->json($courses, 200);
+    }
+
     public function getAllCourse()
     {
         $courses = Course::all();
@@ -39,6 +45,7 @@ class CourseController extends Controller
         $course = Course::create([
             'course_code' => $request->input('course_code'),
             'course_title' => $request->input('course_title'),
+            'author'=> $request->input('author')
         ]);
 
         return response()->json($course, 201);

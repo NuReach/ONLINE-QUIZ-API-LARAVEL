@@ -21,8 +21,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::controller(CourseController::class)->group(function () {
+        
         Route::get('/courses/{id}', 'getOneCourse');
         Route::get('/courses', 'getAllCourse');
+        Route::get('/users/courses', 'getAllCourseBelongToUser');
         Route::post('/courses/create', 'createCourse');
         Route::put('/courses/update/{id}', 'updateCourse');
         Route::delete('/courses/delete/{id}', 'deleteCourse');
