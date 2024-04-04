@@ -31,16 +31,24 @@ class CourseController extends Controller
         return response()->json($courses);
     }
 
-    public function searchCourse ( Request $request , $search ) {
-        $courses = $request->user()->courses()
-                   ->where(
-                    function($query) use ($search) {
-                        $query->where('course_code','LIKE',"%$search%")
-                        ->orWhere('course_title','LIKE',"%$search%");
-                    }
-                   )->paginate(9)
-        ;
+    public function searchCourse ( Request $request , $search , $sortBy , $sortDir ) {
+        $page = 6;
+        if ($search == "all") {
+            $courses = $request->user()->courses()
+            ->orderBy($sortBy, $sortDir)
+            ->paginate($page);
+        }else{
+            $courses = $request->user()->courses()
+            ->where(
+             function($query) use ($search) {
+                 $query->where('course_code','LIKE',"%$search%")
+                 ->orWhere('course_title','LIKE',"%$search%");
+             }
+            )
+            ->orderBy($sortBy, $sortDir)
+            ->paginate($page);
 
+        }
         return response()->json($courses, 200);
     }
 
