@@ -33,7 +33,10 @@ class ExamController extends Controller
             ->where(
              function($query) use ($search) {
                  $query->where('exam_title','LIKE',"%$search%")
-                 ->orWhere('course_id','LIKE',"%$search%");
+                 ->orWhere('course_id','LIKE',"%$search%")
+                 ->orWhereHas('course', function ($query) use ($search) {
+                    $query->where('course_code', 'LIKE', "%$search%");
+                });
              }
             )
             ->orderBy($sortBy, $sortDir)
@@ -76,6 +79,7 @@ class ExamController extends Controller
                 'exam_score' => $request->input('exam_score') ,
                 'exam_duration' => $request->input('exam_duration') ,
                 'exam_description' => $request->input('exam_description') ,
+                'author' => $request->input('author')
             ]);
      
             $questions = $request->questions;
@@ -83,17 +87,11 @@ class ExamController extends Controller
             foreach ($questions as $questionId) {
                 $exam->questions()->attach($questionId);
             }
-    
-            // Commit the transaction
             DB::commit();
-    
-            // Return a success response with the created question and choices
             return response()->json(['message' => 'Exam and question created successfully', 'exam' => $exam, 'questions' => $questions], 201);
         } catch (\Exception $e) {
-            // If an error occurs, rollback the transaction
-            DB::rollback();
             
-            // Return an error response
+            DB::rollback();
             return response()->json(['error' => 'Failed to create exam and question'], 500);
         }
     
