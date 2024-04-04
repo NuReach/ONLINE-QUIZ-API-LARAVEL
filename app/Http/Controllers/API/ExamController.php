@@ -20,6 +20,29 @@ class ExamController extends Controller
         }
     }
 
+    public function searchExams ( Request $request , $search , $sortBy , $sortDir ) {
+        $page = 6;
+        if ($search == "all") {
+            $courses = $request->user()->exams()
+            ->with('course')
+            ->orderBy($sortBy, $sortDir)
+            ->paginate($page);
+        }else{
+            $courses = $request->user()->exams()
+            ->with('course')
+            ->where(
+             function($query) use ($search) {
+                 $query->where('exam_title','LIKE',"%$search%")
+                 ->orWhere('course_id','LIKE',"%$search%");
+             }
+            )
+            ->orderBy($sortBy, $sortDir)
+            ->paginate($page);
+
+        }
+        return response()->json($courses, 200);
+    }
+
 
     public function getAllExam()
     {

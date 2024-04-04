@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('courses', function (Blueprint $table) {
-            $table->unsignedBigInteger('author');
-            $table->foreign('author')->references('id')->on('users')->onDelete('cascade');
+        Schema::table('exams', function (Blueprint $table) {
+            $table->string('status')->default('published');
         });
     }
 
@@ -22,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('courses', function (Blueprint $table) {
+        Schema::table('exams', function (Blueprint $table) {
             //
         });
     }

@@ -42,6 +42,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::controller(ExamController::class)->group(function () {
         Route::get('/exams/{id}', 'getOneExam');
         Route::get('/exams', 'getAllExam');
+        Route::get('/users/exams/search/{search}/{sortBy}/{sortDir}', 'searchExams');
         Route::post('/exams/create', 'createExam');
         Route::put('/exams/update/{id}', 'updateExam');
         Route::delete('/exams/delete/{id}', 'deleteExam');
