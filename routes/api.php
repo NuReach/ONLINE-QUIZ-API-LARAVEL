@@ -34,6 +34,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::controller(QuestionController::class)->group(function () {
         Route::get('/questions/{id}', 'getOneQuestion');
         Route::get('/questions', 'getAllQuestion');
+        Route::get('/users/questions/search/{search}/{sortBy}/{sortDir}', 'searchQuestions');
         Route::post('/questions/create', 'createQuestion');
         Route::put('/questions/update/{id}', 'updateQuestion');
         Route::delete('/questions/delete/{id}', 'deleteQuestion');

@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('course_code')->unique();
             $table->string('course_title');
+            $table->unsignedBigInteger('author');
             $table->timestamps();
+            $table->foreign('author')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

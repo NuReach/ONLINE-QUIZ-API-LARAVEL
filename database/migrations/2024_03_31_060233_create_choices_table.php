@@ -16,6 +16,7 @@ return new class extends Migration
 
             $table->unsignedBigInteger('question_id');
             $table->text('text'); 
+            $table->boolean('is_correct');
             $table->timestamps();
 
             // Define foreign key constraint

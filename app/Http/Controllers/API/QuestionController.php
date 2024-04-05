@@ -20,6 +20,27 @@ class QuestionController extends Controller
             return response()->json(['error' => 'Question not found'], 404);
         }
     }
+    public function searchQuestions ( Request $request , $search , $sortBy , $sortDir ) {
+        $page = 6;
+        if ($search == "all") {
+            $questions = $request->user()->questions()
+            ->orderBy($sortBy, $sortDir)
+            ->paginate($page);
+        }else{
+            $questions = $request->user()->questions()
+            ->where(
+             function($query) use ($search) {
+                 $query->where('question_prompt','LIKE',"%$search%")
+                 ->orWhere('question_type','LIKE',"%$search%")
+                 ->orWhere('question_level','LIKE',"%$search%");
+             }
+            )
+            ->orderBy($sortBy, $sortDir)
+            ->paginate($page);
+
+        }
+        return response()->json($questions, 200);
+    }
 
 
     public function getAllQuestion()
@@ -54,6 +75,7 @@ class QuestionController extends Controller
                 'question_image' => $request->input('question_image'),
                 'question_type' => $request->input('question_type'),
                 'question_level' => $request->input('question_level'),
+                'author' => $request->input('author')
             ]);
     
             // Create choices for the question
@@ -61,7 +83,8 @@ class QuestionController extends Controller
             foreach ($request->question_choices as $choiceData) {
                 $choice = Choice::create([
                     'question_id' => $question->id,
-                    'text' => $choiceData['text']
+                    'text' => $choiceData['text'],
+                    'is_correct' => $choiceData['is_correct']
                 ]);
                 $createdChoices[] = $choice;
             }
@@ -125,6 +148,7 @@ class QuestionController extends Controller
                         [
                             'question_id' => $id,
                             'text' => $choiceData['text'],
+                            'is_correct' => $choiceData['is_correct']
                         ]
                     );
                     $updatedChoices[] = $choice;

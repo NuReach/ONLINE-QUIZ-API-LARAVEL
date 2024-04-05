@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Course;
 use App\Models\Exam;
+use App\Models\Question;
 
 class User extends Authenticatable
 {
@@ -50,10 +51,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Course::class , 'author' , 'id');
     }
-
     
     public function exams () 
     {
         return $this->hasMany(Exam::class , 'author' , 'id');
+    }
+
+    public function questions () 
+    {
+        return $this->hasMany(Question::class , 'author' , 'id');
     }
 }

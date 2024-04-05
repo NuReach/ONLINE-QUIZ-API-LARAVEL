@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('question_image')->nullable(); // Question image (nullable)
             $table->string('question_type'); // Question type
             $table->string('question_level'); // Question level
+            $table->unsignedBigInteger('author');
+            $table->foreign('author')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

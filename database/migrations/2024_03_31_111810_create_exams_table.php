@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('exam_score');
             $table->integer('exam_duration');
             $table->text('exam_description')->nullable();
+            $table->string('status')->default('published');
 
             $table->foreign('course_id')->references('id')->on('courses');
 
