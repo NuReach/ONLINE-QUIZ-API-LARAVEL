@@ -75,6 +75,7 @@ class QuestionController extends Controller
                 'question_image' => $request->input('question_image'),
                 'question_type' => $request->input('question_type'),
                 'question_level' => $request->input('question_level'),
+                'qeustion_mark' => $request->input('question_mark'),
                 'author' => $request->input('author')
             ]);
     
@@ -129,6 +130,7 @@ class QuestionController extends Controller
                     'question_image' => $request->input('question_image'),
                     'question_type' => $request->input('question_type'),
                     'question_level' => $request->input('question_level'),
+                    'qeustion_mark' => $request->input('question_mark'),
                     'author' =>$request->input('author')
                 ]);
 
