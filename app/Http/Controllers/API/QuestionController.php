@@ -43,9 +43,9 @@ class QuestionController extends Controller
     }
 
 
-    public function getAllQuestion()
+    public function getAllQuestion(Request $request)
     {
-        $questions = Question::with('choices')->get();
+        $questions = $request->user()->questions()->get();
         return response()->json($questions);
     }
 

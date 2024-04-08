@@ -47,9 +47,9 @@ class ExamController extends Controller
     }
 
 
-    public function getAllExam()
+    public function getAllExam(Request $request)
     {
-        $exams = Exam::with('questions')->get();
+        $exams = $request->user()->exams()->get();
         return response()->json($exams);
     }
 

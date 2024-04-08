@@ -21,7 +21,7 @@ class CourseController extends Controller
 
     public function getAllCourseBelongToUser(Request $request)
     {
-        $courses = $request->user()->courses()->paginate(9); 
+        $courses = $request->user()->courses()->get(); 
         return response()->json($courses, 200);
     }
 
