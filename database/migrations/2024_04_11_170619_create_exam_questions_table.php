@@ -18,10 +18,8 @@ return new class extends Migration
             // Add any additional fields as needed
             $table->timestamps();
 
-            $table->foreign('exam_id')->references('id')->on('exams');
-            $table->foreign('question_id')->references('id')->on('questions');
-            // Define unique index if required
-    
+            $table->foreign('exam_id')->references('id')->on('exams')->onDelete('cascade');;
+            $table->foreign('question_id')->references('id')->on('questions')->onDelete('cascade');;
         });
     }
 

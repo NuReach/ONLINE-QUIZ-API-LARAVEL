@@ -12,7 +12,7 @@ class ExamController extends Controller
 {
     public function getOneExam($id)
     {
-        $exam =  Exam::with('questions')->find($id);
+        $exam =  Exam::with('questions','course')->find($id);
         if ($exam) {
             return response()->json($exam);
         } else {
@@ -99,6 +99,7 @@ class ExamController extends Controller
 
     public function updateExam(Request $request, $id)
 {
+
     // Validate the request data
     $validator = Validator::make($request->all(), [
         'exam_title' => 'required|string|max:255',
@@ -124,25 +125,28 @@ class ExamController extends Controller
             return response()->json(['error' => 'Exam not found'], 404);
         }
 
-        // Update the exam attributes
         $exam->update([
-            'exam_title' => $request->input('exam_title'),
+            'exam_title' =>  $request->input('exam_title'),
             'course_id' => $request->input('course_id'),
             'exam_percentage' => $request->input('exam_percentage'),
-            'exam_score' => $request->input('exam_score'),
-            'exam_duration' => $request->input('exam_duration'),
-            'exam_description' => $request->input('exam_description'),
+            'exam_score' => $request->input('exam_score') ,
+            'exam_duration' => $request->input('exam_duration') ,
+            'exam_description' => $request->input('exam_description') ,
+            'status'=> $request->input('status') ,
+            'author' => $request->input('author')
         ]);
 
-        // Sync the questions
-        $questions = $request->input('questions', []);
-        $exam->questions()->sync($questions);
+        // // Sync the questions
+        $questions = $request->questions;   
+        foreach ($questions as $questionId) {
+            $exam->questions()->sync($questions);
+        }
 
         // Commit the transaction
         DB::commit();
 
         // Return a success response with the updated exam
-        return response()->json(['message' => 'Exam updated successfully', 'exam' => $exam , 'questions' => $questions  ], 200);
+        return response()->json(['message' => 'Exam updated successfully', 'exam' => $request->all() , 'questions' => $request->questions  ], 200);
     } catch (\Exception $e) {
         // If an error occurs, rollback the transaction
         DB::rollback();
