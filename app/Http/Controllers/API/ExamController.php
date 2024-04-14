@@ -12,7 +12,7 @@ class ExamController extends Controller
 {
     public function getOneExam($id)
     {
-        $exam =  Exam::with('questions','course')->find($id);
+        $exam =  Exam::with('questions','questions.choices','course')->find($id);
         if ($exam) {
             return response()->json($exam);
         } else {

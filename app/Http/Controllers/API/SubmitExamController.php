@@ -14,7 +14,7 @@ class SubmitExamController extends Controller
         $exam_id = $request->exam_id;
         $user_id = $request->user_id;
         $user_answer = $request->user_answers;
-    
+     
         // Initialize an empty array to store user submit exam data
         $userSubmit = [];
     
