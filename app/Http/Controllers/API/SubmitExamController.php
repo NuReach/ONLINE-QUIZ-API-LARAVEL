@@ -48,4 +48,6 @@ class SubmitExamController extends Controller
             return response()->json(['error' => 'Failed to submit exam'], 500);
         }
     }
+
+
 }

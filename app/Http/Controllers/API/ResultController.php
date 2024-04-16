@@ -64,4 +64,26 @@ class ResultController extends Controller
 
         return response()->json($deconstructedObjects, 200);
     }
+
+    public function getUserResult (Request $request ,$user_id,$exam_id) {
+        $userResult = UserAnswer::with('exam','question','choice','user')
+                        ->where('user_id',$user_id)
+                        ->where('exam_id',$exam_id  )
+                        ->get();
+
+        $answers = [];
+        foreach ($userResult as $key => $item) {
+            $answers[] = [
+                'question' => $item['question'],
+                'choice' => $item['choice'],
+            ];
+        }
+
+        $userResultObj = [
+            'exam_id' => $userResult[0]['exam'],
+            'user_id' => $userResult[0]['user'],
+            'answers' => $answers,
+        ];
+        return response()->json($userResultObj, 200);
+    }
 }

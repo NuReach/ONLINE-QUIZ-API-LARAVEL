@@ -58,6 +58,7 @@ Route::controller(SubmitExamController::class)->group(function () {
 });
 
 Route::controller(ResultController::class)->group(function () {
+    Route::get('/get/user/result/{user_id}/{exam_id}','getUserResult');
     Route::get('/getResult', 'getResult');
     Route::get('/getResult/studentScore/{id}', 'getResultStudentScore');
 });
