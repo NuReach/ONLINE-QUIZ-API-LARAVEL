@@ -20,7 +20,7 @@ class SubmitExamController extends Controller
                     ->get();
         
         if ($existed) {
-            return response()->json("Something went wrong !!", 500);
+            return response()->json("You already done this exam !!", 500);
         }
      
         // Initialize an empty array to store user submit exam data

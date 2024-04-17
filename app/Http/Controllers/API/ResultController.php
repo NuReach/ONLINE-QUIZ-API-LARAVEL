@@ -66,10 +66,15 @@ class ResultController extends Controller
     }
 
     public function getUserResult (Request $request ,$user_id,$exam_id) {
-        $userResult = UserAnswer::with('exam','question','question.choices','choice','user')
-                        ->where('user_id',$user_id)
-                        ->where('exam_id',$exam_id  )
-                        ->get();
+        $userResult = UserAnswer::with('exam','exam.course','question','question.choices','choice','user')
+        ->where('user_id', $user_id)
+        ->where('exam_id', $exam_id)
+        ->get()
+        ->unique('question_id')
+        ->sortBy(function ($item) {
+            return $item->question->question_prompt;
+        });
+    
 
         $answers = [];
         foreach ($userResult as $key => $item) {
@@ -79,14 +84,27 @@ class ResultController extends Controller
             ];
         }
 
+        $correct_choices_count = 0;
+        foreach ($answers as $item) {
+            if ($item['choice']['is_correct'] == 1) {
+                $correct_choices_count++;
+            }
+        }
+        
+
+
+
         $userResultObj = [
-            'exam_id' => $userResult[0]['exam'],
-            'user_id' => $userResult[0]['user'],
-            'questions' => $userResult[0]['questions'],
+            'exam' => $userResult[0]['exam'],
+            'user' => $userResult[0]['user'],
             'answers' => $answers,
+            'total_questions'=>sizeof($userResult[0]['exam']['questions']),
+            'total_is_correct'=> $correct_choices_count,
+            'total_missing' => sizeof($userResult[0]['exam']['questions'])-sizeof($answers)
         ];
 
-        $exam = Exam::with('questions','questions.choices')->where('id',$exam_id)->get();
+       //$exam = Exam::with('questions','questions.choices')->where('id',$exam_id)->get();
+
 
         return response()->json($userResultObj, 200);
     }
