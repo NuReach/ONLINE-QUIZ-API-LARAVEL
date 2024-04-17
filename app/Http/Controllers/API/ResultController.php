@@ -66,7 +66,7 @@ class ResultController extends Controller
     }
 
     public function getUserResult (Request $request ,$user_id,$exam_id) {
-        $userResult = UserAnswer::with('exam','question','choice','user')
+        $userResult = UserAnswer::with('exam','question','question.choices','choice','user')
                         ->where('user_id',$user_id)
                         ->where('exam_id',$exam_id  )
                         ->get();
@@ -82,8 +82,12 @@ class ResultController extends Controller
         $userResultObj = [
             'exam_id' => $userResult[0]['exam'],
             'user_id' => $userResult[0]['user'],
+            'questions' => $userResult[0]['questions'],
             'answers' => $answers,
         ];
+
+        $exam = Exam::with('questions','questions.choices')->where('id',$exam_id)->get();
+
         return response()->json($userResultObj, 200);
     }
 }

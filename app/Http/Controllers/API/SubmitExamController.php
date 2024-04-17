@@ -14,6 +14,14 @@ class SubmitExamController extends Controller
         $exam_id = $request->exam_id;
         $user_id = $request->user_id;
         $user_answer = $request->user_answers;
+
+        $existed = UserAnswer::where('exam_id',$exam_id)
+                    ->orWhere('user_id',$user_id)
+                    ->get();
+        
+        if ($existed) {
+            return response()->json("Something went wrong !!", 500);
+        }
      
         // Initialize an empty array to store user submit exam data
         $userSubmit = [];
