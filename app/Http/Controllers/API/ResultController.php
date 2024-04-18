@@ -9,12 +9,34 @@ use App\Models\Exam;
 
 class ResultController extends Controller
 {
-    public function getResult () {
+    // public function getResult (Request $request , $search , $sortBy , $sortDir) {
+    //     $exams = $request->user()->exams()->where('status','!=','prepared')->get();
+    //     $page = 6;
+    //     if ($search == "all") {
+    //         $exams = $request->user()->exams()
+    //         ->where('status','!=','prepared')
+    //         ->orderBy($sortBy, $sortDir)
+    //         ->paginate($page);
+    //     }else{
+    //         $exams = $request->user()->exams()
+    //         ->where('status','!=','prepared')
+    //         ->where('exam_title','LIKE',"%$search%")
+    //         ->orderBy($sortBy, $sortDir)
+    //         ->paginate($page);
+           
 
-        $distinctExamIds = UserAnswer::distinct()->pluck('exam_id');
-        $exams = Exam::whereIn('id', $distinctExamIds)->get();
+    //     }
+    //     return response()->json($exams, 200);
+
+    // }
+
+    public function getResult (Request $request) {
+        $exams = $request->user()->exams()
+        ->with('course')
+        ->where('status','!=','prepared')
+        ->orderBy('created_at', 'desc')
+        ->get();
         return response()->json($exams, 200);
-
     }
 
     public function getResultStudentScore ( $id ) {
@@ -45,22 +67,41 @@ class ResultController extends Controller
 
         $deconstructedObjects = [];
 
-        for ($i=0; $i <sizeof($groupedData) ; $i++) { 
+        for ($i = 0; $i < sizeof($groupedData); $i++) {
             $totalCorrect = 0;
-            for ($j=0; $j < sizeof($groupedData[$i]) ; $j++) { 
+            for ($j = 0; $j < sizeof($groupedData[$i]); $j++) {
                 if ($groupedData[$i][$j]['choice']['is_correct'] == 1) {
-                    $totalCorrect ++ ;
+                    $totalCorrect++;
                 }
             }
+        
+            $percentageScore = $totalCorrect / sizeof($questions) * 100;
+        
+            $grade;
+            if ($percentageScore >= 90) {
+                $grade = 'A';
+            } elseif ($percentageScore >= 80) {
+                $grade = 'B';
+            } elseif ($percentageScore >= 70) {
+                $grade = 'C';
+            } elseif ($percentageScore >= 60) {
+                $grade = 'D';
+            } else {
+                $grade = 'E';
+            }
+        
             $obj = [
                 'exam' => $groupedData[$i][0]['exam']['exam_title'],
                 'course' => $groupedData[$i][0]['exam']['course']['course_code'],
                 'user' => $groupedData[$i][0]['user']['name'],
                 'correct' => $totalCorrect,
                 'state' => sizeof($questions),
-                'created_at' =>$groupedData[$i][0]['exam']['created_at  ']
+                'created_at' => $groupedData[$i][0]['exam']['created_at'],
+                'score' => $percentageScore,
+                'grade' => $grade, // Add 'grade' to the object
             ];
-            $deconstructedObjects [] = $obj;
+        
+            $deconstructedObjects[] = $obj;
         }
 
 
