@@ -16,11 +16,11 @@ class SubmitExamController extends Controller
         $user_answer = $request->user_answers;
 
         $existed = UserAnswer::where('exam_id',$exam_id)
-                    ->orWhere('user_id',$user_id)
+                    ->where('user_id',$user_id)
                     ->get();
         
-        if ($existed) {
-            return response()->json("You already done this exam !!", 500);
+        if (sizeof($existed) > 0) {
+            return response()->json(["message"=>"You already done this exam !!"], 500);
         }
      
         // Initialize an empty array to store user submit exam data

@@ -34,7 +34,7 @@ class ResultController extends Controller
 
             $userId = $userAnswer->user_id;
 
-            $userAnswers = UserAnswer::with('user','choice','exam')
+            $userAnswers = UserAnswer::with('user','choice','exam','exam.course')
             ->where('exam_id', $id)
             ->where('user_id', $userId)
             ->get();
@@ -54,9 +54,11 @@ class ResultController extends Controller
             }
             $obj = [
                 'exam' => $groupedData[$i][0]['exam']['exam_title'],
+                'course' => $groupedData[$i][0]['exam']['course']['course_code'],
                 'user' => $groupedData[$i][0]['user']['name'],
                 'correct' => $totalCorrect,
                 'state' => sizeof($questions),
+                'created_at' =>$groupedData[$i][0]['exam']['created_at  ']
             ];
             $deconstructedObjects [] = $obj;
         }
@@ -91,9 +93,6 @@ class ResultController extends Controller
             }
         }
         
-
-
-
         $userResultObj = [
             'exam' => $userResult[0]['exam'],
             'user' => $userResult[0]['user'],
