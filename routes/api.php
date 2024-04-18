@@ -16,7 +16,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+    return response()->json($request->user(), 200);
 });
 
 Route::middleware(['auth:sanctum','teacher'])->group(function () {
@@ -77,6 +77,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/teacher/dashboard', 'getDashboardDetail');
     });
+
+    
+    Route::controller(AuthController::class)->group(function () {
+        Route::post('/update/user/{id}', 'updateUser');
+    });
+
 });
 
 
