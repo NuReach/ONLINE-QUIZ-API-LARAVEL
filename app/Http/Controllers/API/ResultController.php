@@ -9,32 +9,11 @@ use App\Models\Exam;
 
 class ResultController extends Controller
 {
-    // public function getResult (Request $request , $search , $sortBy , $sortDir) {
-    //     $exams = $request->user()->exams()->where('status','!=','prepared')->get();
-    //     $page = 6;
-    //     if ($search == "all") {
-    //         $exams = $request->user()->exams()
-    //         ->where('status','!=','prepared')
-    //         ->orderBy($sortBy, $sortDir)
-    //         ->paginate($page);
-    //     }else{
-    //         $exams = $request->user()->exams()
-    //         ->where('status','!=','prepared')
-    //         ->where('exam_title','LIKE',"%$search%")
-    //         ->orderBy($sortBy, $sortDir)
-    //         ->paginate($page);
-           
-
-    //     }
-    //     return response()->json($exams, 200);
-
-    // }
 
     public function getResult (Request $request) {
         $exams = $request->user()->exams()
         ->with('course')
         ->where('status','!=','prepared')
-        ->orderBy('created_at', 'desc')
         ->get();
         return response()->json($exams, 200);
     }
@@ -91,9 +70,9 @@ class ResultController extends Controller
             }
         
             $obj = [
-                'exam' => $groupedData[$i][0]['exam']['exam_title'],
-                'course' => $groupedData[$i][0]['exam']['course']['course_code'],
-                'user' => $groupedData[$i][0]['user']['name'],
+                'exam' => $groupedData[$i][0]['exam'],
+                'course' => $groupedData[$i][0]['exam']['course'],
+                'user' => $groupedData[$i][0]['user'],
                 'correct' => $totalCorrect,
                 'state' => sizeof($questions),
                 'created_at' => $groupedData[$i][0]['exam']['created_at'],

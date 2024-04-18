@@ -2,13 +2,14 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\CourseController;
-use App\Http\Controllers\Api\Authentication;
-use App\Http\Controllers\Api\QuestionController;
-use App\Http\Controllers\Api\ExamController;
-use App\Http\Controllers\Api\SubmitExamController;
-use App\Http\Controllers\Api\ResultController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\Authentication;
+use App\Http\Controllers\Api\ExamController;
+use App\Http\Controllers\Api\CourseController;
+use App\Http\Controllers\Api\ResultController;
+use App\Http\Controllers\Api\QuestionController;
+use App\Http\Controllers\API\DashboardController;
+use App\Http\Controllers\Api\SubmitExamController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -18,7 +19,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum','teacher'])->group(function () {
 
     Route::controller(CourseController::class)->group(function () {
         
@@ -54,19 +55,29 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/getResult', 'getResult');
         Route::get('/getResult/studentScore/{id}', 'getResultStudentScore');
     });
-    
 
+    Route::controller(SubmitExamController::class)->group(function () {
+        Route::post('/submitExam/create', 'createSubmitExam');
+    });
 });
 
+Route::middleware(['auth:sanctum'])->group(function () {
 
 
-Route::controller(SubmitExamController::class)->group(function () {
-    Route::post('/submitExam/create', 'createSubmitExam');
+    Route::controller(ResultController::class)->group(function () {
+        Route::get('/get/user/result/{user_id}/{exam_id}','getUserResult');
+        Route::get('/getResult', 'getResult');
+        Route::get('/getResult/studentScore/{id}', 'getResultStudentScore');
+    });
+
+    Route::controller(SubmitExamController::class)->group(function () {
+        Route::post('/submitExam/create', 'createSubmitExam');
+    });
+
+    Route::controller(DashboardController::class)->group(function () {
+        Route::get('/teacher/dashboard', 'getDashboardDetail');
+    });
 });
-
-
-
-
 
 
 Route::get('/helllo', function () {
