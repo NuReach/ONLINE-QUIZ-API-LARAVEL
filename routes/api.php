@@ -22,7 +22,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware(['auth:sanctum','teacher'])->group(function () {
 
     Route::controller(CourseController::class)->group(function () {
-        
         Route::get('/courses/{id}', 'getOneCourse');
         Route::get('/courses', 'getAllCourse');
         Route::get('/users/courses', 'getAllCourseBelongToUser');
@@ -84,8 +83,18 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/update/password/{id}', 'updatePassword');
     });
 
+    Route::controller(CourseController::class)->group(function () {
+        Route::get('/users/student/courses/search/{search}/{sortBy}/{sortDir}', 'searchCourseForStudent');
+        Route::get('/users/student/courses/{user_id}', 'getStudentCourse');
+    }); 
+
+    
 });
 
+Route::controller(CourseController::class)->group(function () {
+    Route::post('/users/student/add/course/{course_id}/{user_id}', 'createCourseForStudent');
+    Route::delete('/users/student/delete/course/{course_id}/{user_id}', 'deleteStudentCourse');
+}); 
 
 Route::get('/helllo', function () {
     return response()->json("hello", 200);

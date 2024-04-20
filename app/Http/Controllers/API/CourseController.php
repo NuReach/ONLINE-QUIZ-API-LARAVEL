@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\User;
 use App\Models\Course;
+use App\Models\Enrollment;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
 class CourseController extends Controller
@@ -106,4 +108,53 @@ class CourseController extends Controller
         $course->delete();
         return response()->json(['message'=>"Delete Course  Successfully"]);
     }
+
+    
+    public function searchCourseForStudent ( Request $request , $search , $sortBy , $sortDir ) {
+        $page = 6;
+        if ($search == "all") {
+            $courses = Course::
+            orderBy($sortBy, $sortDir)
+            ->paginate($page);
+        }else{
+            $courses = Course::
+            where(
+             function($query) use ($search) {
+                 $query->where('course_code','LIKE',"%$search%")
+                 ->orWhere('course_title','LIKE',"%$search%");
+             }
+            )
+            ->orderBy($sortBy, $sortDir)
+            ->paginate($page);
+
+        }
+        return response()->json($courses, 200);
+    }
+
+    public function createCourseForStudent ( $course_id , $user_id ) {
+        $user = User::findOrFail($user_id);
+        $course = Course::findOrFail($course_id);
+        $enroll = Enrollment::create([
+            "user_id" => $user_id,
+            "course_id" => $course_id
+        ]);
+        return response()->json($enroll, 200);
+    }   
+
+    public function getStudentCourse ( $user_id ) {
+        $user = User::findOrFail($user_id);
+        $enrollments = Enrollment::with('user','course','course.user')->where('user_id',$user_id)->get();
+        return response()->json($enrollments, 200);
+    }
+
+    public function deleteStudentCourse ($course_id,$user_id){
+        $user = User::findOrFail($user_id);
+        $course = Course::findOrFail($course_id);
+        $enroll = Enrollment::where('user_id',$user_id)
+        ->where('course_id',$course_id)
+        ->first();
+        $enroll->delete();
+        return response()->json(["message"=>"Item Deleted Successfully"], 200);
+    }
+
 }

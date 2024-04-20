@@ -15,7 +15,7 @@ class DashboardController extends Controller
         $courseCount = Course::count();
         $examCount = Exam::count();
         $questionCount = Question::count();
-        $lastThreeExams = $request->user()->exams()->with('questions')->get();
+        $lastThreeExams = $request->user()->exams()->with('questions','course')->get();
 
         $obj = [
             'courseCount' => $courseCount,
