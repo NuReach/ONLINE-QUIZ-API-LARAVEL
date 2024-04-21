@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\UserAnswer;
 use App\Models\Exam;
+use Illuminate\Support\Facades\DB;
 
 class ResultController extends Controller
 {
@@ -123,8 +124,29 @@ class ResultController extends Controller
         ];
 
        //$exam = Exam::with('questions','questions.choices')->where('id',$exam_id)->get();
-
-
         return response()->json($userResultObj, 200);
+    }
+
+    public function getUserResultList ( $user_id ) {
+        $userResults = DB::table('user_answers as ua')
+        ->select(
+            'e.id as exam_id',
+            'e.exam_title',
+            'e.created_at',
+            'c.id as course_id',
+            'c.course_title',
+            'ua.user_id',
+            DB::raw('COUNT(CASE WHEN ch.is_correct = 1 THEN 1 ELSE NULL END) AS correct_choices_count'),
+            DB::raw('COUNT(*) AS total_choices_count')
+        )
+        ->join('exams as e', 'e.id', '=', 'ua.exam_id')
+        ->join('courses as c', 'c.id', '=', 'e.course_id')
+        ->join('choices as ch', 'ch.id', '=', 'ua.choice_id')
+        ->where('ua.user_id', $user_id)
+        ->groupBy('e.id', 'e.exam_title', 'e.created_at', 'c.id', 'c.course_title', 'ua.user_id')
+        ->orderby('created_at','desc')
+        ->get();
+
+        return response()->json($userResults, 200);
     }
 }

@@ -161,6 +161,16 @@ class ExamController extends Controller
     }
 }
 
-
+public function getUserExamList ($user_id) {
+    $userExamList = DB::table('exams as e')
+    ->select('e.exam_title','e.id', 'e.created_at' ,'c.course_title', 'e.exam_duration', 'u.id as user_id')
+    ->join('courses as c', 'c.id', '=', 'e.course_id')
+    ->join('enrollments as en', 'en.course_id', '=', 'e.course_id')
+    ->join('users as u', 'u.id', '=', 'en.user_id')
+    ->where('u.id', $user_id)
+    ->orderby('created_at', 'desc')
+    ->get();
+    return response()->json($userExamList, 200);
+}
 
 }

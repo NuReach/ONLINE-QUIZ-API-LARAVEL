@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\QuestionController;
 use App\Http\Controllers\API\DashboardController;
 use App\Http\Controllers\Api\SubmitExamController;
 
+
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
@@ -62,11 +63,19 @@ Route::middleware(['auth:sanctum','teacher'])->group(function () {
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
+    Route::controller(ExamController::class)->group(function () {
+        Route::get('/exams/{id}', 'getOneExam');
+        Route::get('/get/user/result/{user_id}/{exam_id}','getUserResult');
+        Route::get('/get/user/exams/{user_id}','getUserExamList');
+    }); 
+
 
     Route::controller(ResultController::class)->group(function () {
         Route::get('/get/user/result/{user_id}/{exam_id}','getUserResult');
+        Route::get('/get/user/result/{user_id}','getUserResultList');
         Route::get('/getResult', 'getResult');
-        Route::get('/getResult/studentScore/{id}', 'getResultStudentScore');
+        Route::get('/getResult/studentScore/{exam_id}', 'getResultStudentScore');
+        
     });
 
     Route::controller(SubmitExamController::class)->group(function () {
