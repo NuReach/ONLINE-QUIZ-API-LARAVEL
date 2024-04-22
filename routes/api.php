@@ -10,14 +10,23 @@ use App\Http\Controllers\Api\ResultController;
 use App\Http\Controllers\Api\QuestionController;
 use App\Http\Controllers\API\DashboardController;
 use App\Http\Controllers\Api\SubmitExamController;
+use App\Http\Controllers\API\NotificationController;
 
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return response()->json($request->user(), 200);
+});
+
+Route::middleware(['auth:sanctum','admin'])->group(function () {
+    Route::controller(NotificationController::class)->group(function () {
+        Route::post('/notifications/create','createNotification');
+        Route::get('/notifications/{search}/{sortBy}/{sortDir}', 'searchNotification');
+        Route::delete('/notifications/delete/{id}', 'deleteNotification');
+    }); 
 });
 
 Route::middleware(['auth:sanctum','teacher'])->group(function () {
