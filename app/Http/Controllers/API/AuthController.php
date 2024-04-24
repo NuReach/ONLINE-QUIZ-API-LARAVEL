@@ -136,4 +136,21 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Password updated successfully.']);
     }
+
+    public function getAllUser (Request $request , $search , $sortBy , $sortDir ) {
+        $page = 30;
+        if ($search == "all") {
+            $users =User::
+             orderBy($sortBy, $sortDir)
+            ->paginate($page);
+        }else{
+            $users = User::
+            where('name',"LIKE","%$search%")
+            ->orWhere('email',"LIKE","%$search%")
+            ->orderBy($sortBy, $sortDir)
+            ->paginate($page);
+
+        }
+        return response()->json($users, 200);
+    }
 }
