@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\User;
+use App\Models\UserAnswer;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Http\Request;
-use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 
 class AuthController extends Controller
@@ -54,6 +55,7 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'role' => $request->role,
             'image_url'=>$request->image_url,
             'password' => Hash::make($request->password),
         ]);
@@ -88,6 +90,7 @@ class AuthController extends Controller
                 'name' => 'string|max:255',
                 'email' => 'email|unique:users,email,' . $id,
                 'password' => 'string|min:6',
+            
             ]);
 
             // If validation fails, return an error response
@@ -107,6 +110,9 @@ class AuthController extends Controller
             }
             if ($request->has('user_image')) {
                 $user->image_url = $request->user_image;
+            }
+            if ($request->has('role')) {
+                $user->role = $request->role;
             }
 
             // Save the updated user
@@ -153,4 +159,24 @@ class AuthController extends Controller
         }
         return response()->json($users, 200);
     }
+
+    public function deleteUser($id) {
+        $user = User::find($id);
+    
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $deleteUserAnswer = UserAnswer::where('user_id', $id)->delete();
+    
+        $user->delete();
+    
+        return response()->json(['message' => 'User deleted successfully'], 200);
+    }
+
+    public function getUserById ($id) {
+        $user = User::find($id);
+        return response()->json($user, 200);
+    }
+    
 }

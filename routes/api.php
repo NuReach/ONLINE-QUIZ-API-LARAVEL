@@ -22,6 +22,7 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 });
 
 Route::middleware(['auth:sanctum','admin'])->group(function () {
+    Route::get('/user/{id}', [AuthController::class, 'getUserById']);
     Route::controller(NotificationController::class)->group(function () {
         Route::post('/notifications/create','createNotification');
         Route::get('/notifications/{search}/{sortBy}/{sortDir}', 'searchNotification');
@@ -30,6 +31,7 @@ Route::middleware(['auth:sanctum','admin'])->group(function () {
 
     Route::controller(AuthController::class)->group(function () {
         Route::get('/get/all/users/{search}/{sortBy}/{sortDir}', 'getAllUser');
+        Route::delete('/users/delete/{id}', 'deleteUser');
     });
 });
 
