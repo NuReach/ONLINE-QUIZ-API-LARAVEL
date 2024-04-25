@@ -21,7 +21,7 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return response()->json($request->user(), 200);
 });
 
-Route::middleware(['auth:sanctum','admin'])->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user/{id}', [AuthController::class, 'getUserById']);
     Route::controller(NotificationController::class)->group(function () {
         Route::post('/notifications/create','createNotification');
@@ -99,6 +99,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/teacher/dashboard', 'getDashboardDetail');
+        Route::get('/user/dashboard/{id}', 'getUserDashboardDetail');
     });
 
     
